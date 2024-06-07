@@ -1,7 +1,7 @@
 {
-  "name": "autovariablegen",
-  "displayName": "AutoVariableGen",
-  "description": "Auto suggestion variable name",
+  "name": "keyworddetector",
+  "displayName": "scan",
+  "description": "Keyword detector",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.89.0"
@@ -13,12 +13,12 @@
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
-      {
-        "command": "autovariablegen.helloWorld",
-        "title": "AutoVariableGen"
-      }
+        {
+            "command": "keyword-detector.scan",
+            "title": "Scan for Keywords"
+        }
     ]
-  },
+},
   "scripts": {
     "vscode:prepublish": "npm run package",
     "compile": "webpack",

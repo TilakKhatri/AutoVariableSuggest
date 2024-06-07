@@ -1,28 +1,42 @@
 import * as vscode from "vscode";
 
 export function activate(context: vscode.ExtensionContext) {
-  console.log(
-    'Congratulations, your extension "autovariablegen" is now active!'
-  );
+  console.log('Your extension "keyword-detector" is now active!');
 
   let disposable = vscode.commands.registerCommand(
-    "autovariablegen.helloWorld",
+    "keyword-detector.scan",
     () => {
       const editor = vscode.window.activeTextEditor;
+
       if (editor) {
         const document = editor.document;
-        const selection = editor.selection;
-        const text = document.getText(selection);
+        const text = document.getText();
 
-        if (text) {
-          const relatedVariables = generateRelatedVariables(text);
-          editor.edit((editBuilder) => {
-            const position = selection.end;
-            relatedVariables.forEach((variable) => {
-              editBuilder.insert(position, `\n${variable}`);
-            });
-          });
+        const keywords = ["die", "print_r()"];
+        const keywordPattern = new RegExp(`\\b(${keywords.join("|")})\\b`, "g");
+
+        const diagnostics: vscode.Diagnostic[] = [];
+
+        let match;
+        while ((match = keywordPattern.exec(text))) {
+          const startPos = document.positionAt(match.index);
+          const endPos = document.positionAt(match.index + match[0].length);
+          const range = new vscode.Range(startPos, endPos);
+
+          const diagnostic = new vscode.Diagnostic(
+            range,
+            `Keyword '${match[0]}' detected. Please remove it before deployment.`,
+            vscode.DiagnosticSeverity.Warning
+          );
+
+          diagnostics.push(diagnostic);
         }
+
+        const diagnosticCollection =
+          vscode.languages.createDiagnosticCollection("keyword-detector");
+        diagnosticCollection.set(document.uri, diagnostics);
+
+        vscode.window.showInformationMessage("Keyword scan complete!");
       }
     }
   );
@@ -30,15 +44,4 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(disposable);
 }
 
-function generateRelatedVariables(baseVariable: string): string[] {
-  // Example logic to generate related variables
-  const variableBase = baseVariable.replace(/([A-Z])/g, "_$1").toLowerCase();
-  return [
-    `${variableBase}_count`,
-    `${variableBase}_list`,
-    `${variableBase}_map`,
-  ];
-}
-
-// This method is called when your extension is deactivated
 export function deactivate() {}
