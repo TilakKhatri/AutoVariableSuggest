@@ -1,47 +1,35 @@
 import * as vscode from "vscode";
 
 export function activate(context: vscode.ExtensionContext) {
-  console.log('Your extension "keyword-detector" is now active!');
-
   let disposable = vscode.commands.registerCommand(
-    "keyword-detector.scan",
-    () => {
+    "extension.highlightKeywords",
+    async () => {
       const editor = vscode.window.activeTextEditor;
-
-      if (editor) {
-        const document = editor.document;
-        const text = document.getText();
-
-        const keywords = ["die", "print_r()"];
-        const keywordPattern = new RegExp(`\\b(${keywords.join("|")})\\b`, "g");
-
-        const diagnostics: vscode.Diagnostic[] = [];
-
-        let match;
-        while ((match = keywordPattern.exec(text))) {
-          const startPos = document.positionAt(match.index);
-          const endPos = document.positionAt(match.index + match[0].length);
-          const range = new vscode.Range(startPos, endPos);
-
-          const diagnostic = new vscode.Diagnostic(
-            range,
-            `Keyword '${match[0]}' detected. Please remove it before deployment.`,
-            vscode.DiagnosticSeverity.Warning
-          );
-
-          diagnostics.push(diagnostic);
-        }
-
-        const diagnosticCollection =
-          vscode.languages.createDiagnosticCollection("keyword-detector");
-        diagnosticCollection.set(document.uri, diagnostics);
-
-        vscode.window.showInformationMessage("Keyword scan complete!");
+      if (!editor) {
+        return;
       }
+
+      const document = editor.document;
+      const keywords = ["print", "import"]; // Add your keywords here
+      const regex = new RegExp(`(${keywords.join("|")})`, "gi");
+      // console.log("regex", regex);
+      // Find all occurrences of the keywords
+      const ranges: vscode.DecorationOptions[] = [];
+      let match;
+      while ((match = regex.exec(document.getText())) !== null) {
+        const startPos = document.positionAt(match.index);
+        const endPos = document.positionAt(match.index + match[0].length);
+        const range = new vscode.Range(startPos, endPos);
+        ranges.push({ range });
+      }
+      editor.setDecorations(decorationType, ranges);
     }
   );
 
   context.subscriptions.push(disposable);
 }
-
+let decorationType = vscode.window.createTextEditorDecorationType({
+  backgroundColor: "rgba(255,255,0,0.3)", // Yellow background
+  border: "1px solid red", // Red border
+});
 export function deactivate() {}

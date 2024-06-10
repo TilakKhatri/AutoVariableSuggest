@@ -1,7 +1,7 @@
 {
-  "name": "keyworddetector",
-  "displayName": "scan",
-  "description": "Keyword detector",
+  "name": "keywordhighlighter",
+  "displayName": "keyworHighlighter",
+  "description": "Keyword Highlighter",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.89.0"
@@ -9,14 +9,16 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+   
+],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
-        {
-            "command": "keyword-detector.scan",
-            "title": "Scan for Keywords"
-        }
+      {
+        "command": "extension.highlightKeywords",
+        "title": "Keyword Highlighter"
+    }
     ]
 },
   "scripts": {
