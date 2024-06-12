@@ -18,7 +18,15 @@
       {
         "command": "extension.highlightKeywords",
         "title": "Keyword Highlighter"
-    }
+    },
+    {
+      "command": "extension.removekeywords",
+      "title": "Remove Keyword "
+  },
+  {
+    "command": "extension.commentKeywords",
+    "title": "Comment Keywords"
+}
     ]
 },
   "scripts": {
