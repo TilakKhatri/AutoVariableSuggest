@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 
-const keywords = ["print", "import", "printf", "die"]; // Add your keywords here
+const keywords = ["abort", "exit", "Exit", "die"];
 const regex = new RegExp(`(${keywords.join("|")})`, "gi");
 
 export function activate(context: vscode.ExtensionContext) {
@@ -47,15 +47,13 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(disposableCommentKeywords);
 }
 let decorationType = vscode.window.createTextEditorDecorationType({
-  backgroundColor: "rgba(255,255,0,0.3)", // Yellow background
+  backgroundColor: "rgba(255,255,0,0.7)", // Yellow background
   border: "1px solid red", // Red border
+  color: "black",
 });
 
 async function removeKeywords(editor: vscode.TextEditor) {
   const document = editor.document;
-  // const keywords = ["print", "import", "printf", "die"];
-  // const regex = new RegExp(`(${keywords.join("|")})`, "gi");
-
   let match;
   while ((match = regex.exec(document.getText())) !== null) {
     const startPos = document.positionAt(match.index);
@@ -68,15 +66,37 @@ async function removeKeywords(editor: vscode.TextEditor) {
 
 async function commentOutLinesContainingKeywords(editor: vscode.TextEditor) {
   const document = editor.document;
-  // const keywords = ["print", "import", "printf", "die"];
-  // const regex = new RegExp(`(${keywords.join("|")})`, "gi");
   const ranges = getKeywordRanges(document, regex);
-
+  const language = await getActiveFileLanguage();
+  console.log("language: ", language);
+  let languages = [
+    "python",
+    "javascript",
+    "c",
+    "c++",
+    "java",
+    "php",
+    "go",
+    "rust",
+  ];
   for (const range of ranges) {
     const startPos = range.start;
     const endPos = range.end;
     const line = document.lineAt(startPos.line);
-    const newText = `#`;
+    let newText = `#`;
+    if (language === "python") {
+      newText = `#`;
+    } else if (language === "javascript") {
+      newText = `//`;
+    } else if (language === "c") {
+      newText = `//`;
+    } else if (language === "c++") {
+      newText = `//`;
+    } else if (language === "java") {
+      newText = `//`;
+    } else {
+      newText = `--`;
+    }
     await editor.edit((editBuilder) =>
       editBuilder.replace(new vscode.Range(startPos, startPos), newText)
     );
@@ -97,23 +117,6 @@ function getKeywordRanges(
   return ranges;
 }
 
-// function getKeywordRanges(editor: any) {
-//   const document = editor.document;
-//   const keywords = ["print", "import", "printf", "die"]; // Add your keywords here
-//   const regex = new RegExp(`(${keywords.join("|")})`, "gi");
-//   // console.log("regex", regex);
-//   // Find all occurrences of the keywords
-//   // const ranges: vscode.DecorationOptions[] = [];
-//   const ranges = [];
-//   let match;
-//   while ((match = regex.exec(document.getText())) !== null) {
-//     const startPos = document.positionAt(match.index);
-//     const endPos = document.positionAt(match.index + match[0].length);
-//     const range = new vscode.Range(startPos, endPos);
-//     ranges.push({ range });
-//   }
-//   return ranges;
-// }
 export function getActiveFileLanguage(): Thenable<string | undefined> {
   return vscode.window.activeTextEditor
     ? Promise.resolve(vscode.window.activeTextEditor.document.languageId)
