@@ -1,8 +1,16 @@
 {
-  "name": "keywordhighlighter",
-  "displayName": "keyworHighlighter",
-  "description": "Keyword Highlighter",
+  "name": "CodeSpectrum",
+  "displayName": "CodeSpectrum",
+  "description": "CodeSpectrum for keyword highligh, keyword comment and remove",
   "version": "0.0.1",
+  "icon": "assets/CodeSpectrum.png",
+  "publisher": "TilakKhatri",
+  "preview": true,
+  "galleryBanner.color": {
+    "color":"#1649ff",
+    "theme":"dark"
+  },
+  "keywords": ["auto comments","keyword removal","keyword highlightKeywords","commentKeywords"],
   "engines": {
     "vscode": "^1.89.0"
   },
@@ -17,15 +25,15 @@
     "commands": [
       {
         "command": "extension.highlightKeywords",
-        "title": "Keyword Highlighter"
+        "title": "CodeSpectrum: Highlight"
     },
     {
       "command": "extension.removekeywords",
-      "title": "Remove Keyword "
+      "title": "CodeSpectrum : Remove"
   },
   {
     "command": "extension.commentKeywords",
-    "title": "Comment Keywords"
+    "title": "CodeSpectrum: Comment"
 }
     ]
 },
